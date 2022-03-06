@@ -18,6 +18,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Register'),
+        centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
@@ -65,6 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 hintText: "Password",
                 inputController: _password,
                 labelText: "Password",
+                password: true,
               ),
               SizedBox(height: 20),
               GradientButtonFb1(
@@ -92,13 +95,15 @@ class CustomInputFieldFb1 extends StatelessWidget {
   final String hintText;
   final Color primaryColor;
   final String labelText;
+  final bool? password;
 
   const CustomInputFieldFb1(
       {Key? key,
       required this.inputController,
       required this.hintText,
       required this.labelText,
-      this.primaryColor = Colors.indigo})
+      this.primaryColor = Colors.indigo,
+      this.password})
       : super(key: key);
 
   @override
@@ -114,6 +119,7 @@ class CustomInputFieldFb1 extends StatelessWidget {
       ]),
       child: TextField(
         controller: inputController,
+        obscureText: password == true ? true : false,
         onChanged: (value) {
           //Do something wi
         },

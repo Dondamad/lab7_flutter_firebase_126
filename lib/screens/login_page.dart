@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebaseauth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
@@ -14,37 +13,34 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(children: [
-        inputEmail(),
-        inputPassword(),
-        formButton(),
-        const Divider(),
-        GoogleAuthButton(
-          onPressed: () async {
-            UserCredential userCredential = await signInWithGoogle();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(userdata: userCredential),
-              ),
-            );
-          },
-          darkMode: false, // if true second example
-        ),
-        Center(
-          child: IconButton(
+      body: Form(
+        key: _formKey,
+        child: ListView(children: [
+          inputEmail(),
+          inputPassword(),
+          formButton(),
+          const Divider(),
+          GoogleAuthButton(
             onPressed: () {
-              googleSignOut();
+              signInWithGoogle().then((value) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
+              });
             },
-            icon: Icon(Icons.logout),
+            darkMode: false, // if true second example
           ),
-        )
-      ]),
+        ]),
+      ),
     );
   }
 
@@ -97,7 +93,16 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           onPressed: () {
-            loginUser(_email.text, _password.text);
+            if (_formKey.currentState!.validate()) {
+              loginUser(_email.text, _password.text).then((value) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePage(),
+                  ),
+                );
+              });
+            }
           },
           child: const Text('เข้าสู่ระบบ')),
     );

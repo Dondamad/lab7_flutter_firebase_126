@@ -22,6 +22,7 @@ class _EditProductPageState extends State<EditProductPage> {
   @override
   void initState() {
     super.initState();
+
     dropdownMenuItems = createDropdownMenu(dropdownItems);
     _selectedType = dropdownMenuItems[0].value!;
     //สร้าง function ตอนเริ่มต้น สำหรับดึงข้อมูล
@@ -39,7 +40,9 @@ class _EditProductPageState extends State<EditProductPage> {
           .indexWhere((element) => element.value == data['product_type']);
       _name.text = data["product_name"];
       _price.text = data['price'].toString();
-      _selectedType = dropdownMenuItems[index].value!;
+      setState(() {
+        _selectedType = dropdownMenuItems[index].value!;
+      });
     });
   }
 

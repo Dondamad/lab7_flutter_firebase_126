@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebaseauth/screens/login_page.dart';
+import 'package:firebaseauth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import 'add_product.dart';
 import 'edit_product_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.userdata}) : super(key: key);
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
-  final UserCredential? userdata;
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -16,31 +19,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Homepage'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              googleSignOut().then((value) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                );
+              });
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            ListTile(
-              leading: Container(
-                width: 50,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(14)),
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                widget.userdata!.user!.photoURL.toString()))),
-                  ),
-                ),
-              ),
-              title: Text(widget.userdata!.user!.displayName.toString()),
-              subtitle: Text(widget.userdata!.user!.uid.toString()),
-            ),
-            showList()
+            Text('${user.email}'),
+            Text('${user.uid}'),
+            showList(),
           ],
         ),
       ),
@@ -77,6 +81,7 @@ class _HomePageState extends State<HomePage> {
                   child: ListTile(
                     onTap: () {
                       // Navigate to Edit Product
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -91,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                         var alertDialog = AlertDialog(
                           title: const Text('Delete Product Confirmation'),
                           content: Text(
-                              'คุณต้องการลบสินค้า ${data['name']} ใช่หรือไม่'),
+                              'คุณต้องการลบสินค้า ${data['product_name']} ใช่หรือไม่'),
                           actions: [
                             TextButton(
                                 onPressed: () => Navigator.pop(context),

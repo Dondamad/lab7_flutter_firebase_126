@@ -16,8 +16,8 @@ Future<UserCredential?> registerUser(name, company, email, password) async {
 
     users
         .add({
-          'full_name': name, //Naphat Keawpibal
-          'company': company, // Thaksin University
+          'full_name': name,
+          'company': company,
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -35,10 +35,10 @@ Future<UserCredential?> registerUser(name, company, email, password) async {
   return null;
 }
 
-Future<void> loginUser(email, password) async {
+Future loginUser(email, password) async {
   try {
-    UserCredential userCredential =
-        await auth.signInWithEmailAndPassword(email: email, password: password);
+    return await auth.signInWithEmailAndPassword(
+        email: email, password: password);
   } on FirebaseAuthException catch (e) {
     print(e.code);
     if (e.code == 'user-not-found') {
@@ -49,6 +49,7 @@ Future<void> loginUser(email, password) async {
   } catch (e) {
     print(e);
   }
+  return null;
 }
 
 Future<UserCredential> signInWithGoogle() async {
